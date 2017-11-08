@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "outDir": "./build",
+        "preserveConstEnums": true,
+        "moduleResolution": "node",
+        "sourceMap": true
+    },
+    "files": [
+        "index.ts",
+        "server.ts",
+    ]
+}
