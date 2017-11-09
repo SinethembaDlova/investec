@@ -1,7 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
 
 @Entity()
-export class relationshipSchema {
+export class entity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -11,9 +11,6 @@ export class relationshipSchema {
 
     @Column()
     parentEntityName: string;
-
-    @Column()
-    relationshipType: string;
 
     @Column()
     entityId: number;

@@ -42,7 +42,7 @@ export class Server {
 
 
         //run Server
-        const port = process.env.PORT || 5001;
+        const port = process.env.PORT || 5002;
         this.app.listen(port, () => console.log("Server running on port: " + port));
 
     }

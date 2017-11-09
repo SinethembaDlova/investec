@@ -2,7 +2,7 @@ import * as express from 'express';
 import {Request, Response, NextFunction} from 'express';
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import {relationshipSchema} from "../.././entity/relationshipSchema";
+import {entity} from "../.././entity/entity";
 import * as CSV from 'csvtojson';
 
 
@@ -19,7 +19,7 @@ export class HomeRoute {
             password: "Supr3m3sn3",
             database: "investecDB",
             entities: [
-                relationshipSchema
+                entity
             ],
             synchronize: true,
             logging: false
@@ -30,43 +30,40 @@ export class HomeRoute {
 
             //converting my my csv file into json
             const converter = new CSV();
-            converter.fromFile(csvFilePath, async(err, jsonObj) => {
+            converter.fromFile(csvFilePath, async (err, jsonObj) => {
                 // do something with "result", it's json
-                if(err){
-                  console.log(err);
+                if (err) {
+                    console.log(err);
                 }
-                else{
-                  console.log(jsonObj);
-                  for(var i = 0; i < jsonObj.length; i++){
+                else {
+                    console.log(jsonObj);
 
-                    console.log("Inserting a new relationshipSchema into the database...");
-                    const relationship = new relationshipSchema();
-                    relationship.parentEntityId = jsonObj[i]["Parent Entity Id"];
-                    relationship.parentEntityName = jsonObj[i]["Parent Entity Name"];
-                    relationship.relationshipType = jsonObj[i]["Relationship Type"];
-                    relationship.entityId = jsonObj[i]["Entity Id"];
-                    relationship.entityName = jsonObj[i]["Entity Name"];
-                    await connection.manager.save(relationship);
-                    console.log("Saved a new relationshipSchema with id: " + relationship.id);
+                    //clear the table first
+                    connection.manager.query("detele from relationshipSchema");
 
-                    console.log("Loading relationshipSchemas from the database...");
-                    const relationshipSchemas = await connection.manager.find(relationshipSchema);
-                    console.log("Loaded relationship: ", relationship);
+                    for (var i = 0; i < jsonObj.length; i++) {
 
-                    console.log("Here you can setup and run express/koa/any other framework.");
-                //
-                // }).catch(error => console.log(error));
+                        console.log("Inserting a new relationshipSchema into the database...");
+                        const entityTable = new entity();
+                        entityTable.parentEntityId = jsonObj[i]["Parent Entity Id"];
+                        entityTable.parentEntityName = jsonObj[i]["Parent Entity Name"];
+                        entityTable.entityId = jsonObj[i]["Entity Id"];
+                        entityTable.entityName = jsonObj[i]["Entity Name"];
+                        await connection.manager.save(entityTable);
+                        console.log("Saved a new relationshipSchema with id: " + entityTable.id);
 
-                  }
+                    }
                 }
+                console.log("Loading relationshipSchemas from the database...");
+                const entities = await connection.manager.find(entity);
+                console.log("Loaded relationship: ", entities);
+
+                console.log("Here you can setup and run express/koa/any other framework.");
+                res.json({
+                    status: 200,
+                    data: entities
+                })
             });
-
-
-
-        res.json({
-            status: 200,
-            Message: "Hello world"
         })
-    })
-}
+    }
 }
