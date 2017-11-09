@@ -3,7 +3,7 @@ import * as express from 'express';
 import {Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
 import * as logger from "morgan";
-
+import {createConnection} from 'typeorm';
 //Sever
 export class Server {
 
@@ -18,7 +18,6 @@ export class Server {
     public config() {
 
       //db
-
 
         //config my dependencies
         this.app.use(express.static('public'));
