@@ -2,8 +2,11 @@
 import * as express from 'express';
 import {Request, Response, NextFunction } from 'express';
 import * as bodyParser from 'body-parser';
-import * as logger from "morgan";
+import * as logger from 'morgan';
 import {createConnection} from 'typeorm';
+import {DbConnect} from '../typeORMConnection';
+
+var dbConnect = new DbConnect();
 //Sever
 export class Server {
 
@@ -18,7 +21,7 @@ export class Server {
     public config() {
 
       //db
-
+        dbConnect.connect();
         //config my dependencies
         this.app.use(express.static('public'));
         this.app.use(bodyParser.json());
