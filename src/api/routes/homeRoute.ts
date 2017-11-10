@@ -5,10 +5,11 @@ import {entity} from "../.././entity/entity";
 import * as CSV from 'csvtojson';
 
 
+
 export class HomeRoute {
     constructor() { }
 
-    public landHome(req: Request, res: Response, next: NextFunction): void {
+    public getAllEntities(req: Request, res: Response, next: NextFunction): void {
 
         let entityRepo = getRepository(entity);
         //accessing my csv file
@@ -24,23 +25,35 @@ export class HomeRoute {
                 console.log(jsonObj);
 
                 //clear the table first
-                entityRepo.manager.query("detele from relationshipSchema");
+                entityRepo.manager.query("delete from entity");
 
+                console.log("Inserting a new relationshipSchema into the database...");
                 for (var i = 0; i < jsonObj.length; i++) {
 
-                    console.log("Inserting a new relationshipSchema into the database...");
                     const entityTable = new entity();
-                    entityTable.parentEntityId = jsonObj[i]["Parent Entity Id"];
-                    entityTable.parentEntityName = jsonObj[i]["Parent Entity Name"];
-                    entityTable.entityId = jsonObj[i]["Entity Id"];
-                    entityTable.entityName = jsonObj[i]["Entity Name"];
-                    await entityRepo.manager.save(entityTable);
-                    console.log("Saved a new relationshipSchema with id: " + entityTable.id);
+                    const entities = await entityRepo.find({ entityId: jsonObj[i]["Parent Entity Id"] });
+
+                    if (entities.length === 0) {
+                        entityTable.entityId = jsonObj[i]["Parent Entity Id"];
+                        entityTable.entityName = jsonObj[i]["Parent Entity Name"];
+                        await entityRepo.manager.save(entityTable);
+                    }
+                }
+
+                for (var i = 0; i < jsonObj.length; i++) {
+                    const entityTable = new entity();
+                    const entities = await entityRepo.find({ entityId: jsonObj[i]["Entity Id"] });
+
+                    if(entities.length === 0){
+                      entityTable.entityId = jsonObj[i]["Entity Id"];
+                      entityTable.entityName = jsonObj[i]["Entity Name"];
+                      await entityRepo.manager.save(entityTable);
+                    }
                 }
             }
-            console.log("Loading relationshipSchemas from the database...");
+            //console.log("Loading relationshipSchemas from the database...");
             const entities = await entityRepo.manager.find(entity);
-            console.log("Loaded relationship: ", entities);
+            //console.log("Loaded relationship: ", entities);
 
             res.json({
                 status: 200,

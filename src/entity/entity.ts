@@ -7,12 +7,6 @@ export class entity {
     id: number;
 
     @Column()
-    parentEntityId: number;
-
-    @Column()
-    parentEntityName: string;
-
-    @Column()
     entityId: number;
 
     @Column()
