@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import {entity} from "./entity/entity";
+import {relationshipType} from "./entity/relationship-type";
 
 //connecting into my database
 export class DbConnect {
@@ -14,7 +15,7 @@ export class DbConnect {
             password: "Supr3m3sn3",
             database: "investecDB",
             entities: [
-                entity
+                entity, relationshipType
             ],
             synchronize: true,
             logging: false
